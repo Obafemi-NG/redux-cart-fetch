@@ -15,7 +15,13 @@ export const fetchCartData = () => {
     };
     try {
       const fetchedData = await fetchRequest();
-      dispatch(cartActions.replaceCartItems(fetchedData));
+
+      dispatch(
+        cartActions.replaceCartItems({
+          items: fetchedData.items || [],
+          totalQuantity: fetchedData.totalQuantity,
+        })
+      );
     } catch (error) {
       dispatch(
         uiActions.showNotification({
@@ -42,7 +48,10 @@ export const sendCartData = (cart) => {
         "https://task-form-project-default-rtdb.firebaseio.com/cart.json";
       const response = await fetch(url, {
         method: "PUT",
-        body: JSON.stringify(cart),
+        body: JSON.stringify({
+          items: cart.items,
+          totalQuantity: cart.totalQuantity,
+        }),
       });
       if (!response.ok) {
         throw new Error("Attempt to add item to cart failed!");
