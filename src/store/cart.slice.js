@@ -1,5 +1,4 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { uiActions } from "./ui.slice";
 
 const INITIAL_CART_STATE = {
   items: [],
@@ -9,6 +8,10 @@ const cartSlice = createSlice({
   name: "cart",
   initialState: INITIAL_CART_STATE,
   reducers: {
+    replaceCartItems(state, action) {
+      state.items = action.payload.items;
+      state.totalQuantity = action.payload.totalQuantity;
+    },
     addItemToCart(state, action) {
       state.totalQuantity++;
       const newItem = action.payload;
@@ -39,47 +42,6 @@ const cartSlice = createSlice({
     },
   },
 });
-
-export const sendCartData = (cart) => {
-  return async (dispatch) => {
-    dispatch(
-      uiActions.showNotification({
-        status: "pending",
-        title: "Sending",
-        message: "Sending item to Cart",
-      })
-    );
-    const sendRequest = async () => {
-      const url =
-        "https://task-form-project-default-rtdb.firebaseio.com/cart.json";
-      const response = await fetch(url, {
-        method: "PUT",
-        body: JSON.stringify(cart),
-      });
-      if (!response.ok) {
-        throw new Error("Attempt to add item to cart failed!");
-      }
-    };
-    try {
-      await sendRequest();
-      dispatch(
-        uiActions.showNotification({
-          status: "success",
-          title: "Success!",
-          message: "Item added to cart successfully!",
-        })
-      );
-    } catch (error) {
-      dispatch(
-        uiActions.showNotification({
-          status: "error",
-          title: "Attempt Failed",
-          message: "Attempt to add item to cart Failed!",
-        })
-      );
-    }
-  };
-};
 
 export const cartActions = cartSlice.actions;
 export default cartSlice;
