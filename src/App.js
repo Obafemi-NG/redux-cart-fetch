@@ -6,7 +6,7 @@ import Cart from "./components/cart/cart";
 import Layout from "./components/layout/layout";
 import Products from "./components/shop/products";
 import Notification from "./components/UI/notification";
-import { sendCartData } from "./store/cart.slice";
+import { sendCartData, fetchCartData } from "./store/cart.actions";
 
 // import { uiActions } from "./store/ui.slice";
 
@@ -17,6 +17,9 @@ function App() {
   const notification = useSelector((state) => state.ui.notification);
   const dispatch = useDispatch();
 
+  useEffect(() => {
+    dispatch(fetchCartData());
+  }, [dispatch]);
   useEffect(() => {
     // const sendCartData = async () => {
     //   dispatch(
